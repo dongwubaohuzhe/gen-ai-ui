@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { SearchResponse } from './types';
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class SearchService {
   //{"type":"general","setup":"What’s the advantage of living in Switzerland?","punchline":"Well, the flag is a big plus.","id":283}
 
   private _postReflectorUrl: string = "https://httpbin.org/post";
-  private _postAIUrl: string = "https://127.0.0.1:8000/search";
+  private _postAIUrl: string = "http://127.0.0.1:8000/search";
 
   constructor(private http: HttpClient) { }
 
@@ -21,7 +21,16 @@ export class SearchService {
   }
 
   doPostAISearch(keyString: any, sType: string, top: number = 10, rerank: number = 5): any {
-    return this.http.post<SearchResponse>(this._postAIUrl, {'query': keyString, 'search_type': sType, 'top_k': top, 'rerank_k': rerank});
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      })
+    };
+    return this.http.post(
+      this._postAIUrl,
+      {'query': keyString, 'search_type': sType, 'top_k': top, 'rerank_k': rerank},
+      httpOptions
+    );
   }
 
   doPostSearch(keyString: any): any {

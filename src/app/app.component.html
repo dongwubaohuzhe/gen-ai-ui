@@ -64,7 +64,7 @@
       <th>Score</th>
       <th>Text</th>
     </tr>
-    <tr *ngFor="let det of resp.json.result">
+    <tr *ngFor="let det of resp.result">
       <td style="vertical-align: top;">{{ det.score }}</td>
       <td>{{ det.text }}</td>
     </tr>

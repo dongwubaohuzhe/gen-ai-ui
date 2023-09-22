@@ -37,8 +37,8 @@ export class AppComponent {
           .subscribe(
             data => {
               this.resp = data;
-              if(!this.resp?.json?.result){
-                this.errorMessage = "Incorrect response format:" + JSON.stringify(this.resp.json);
+              if(!this.resp?.result){
+                this.errorMessage = "Incorrect response format:" + JSON.stringify(this.resp);
                 this.requestValid = false;
                 console.log(this.errorMessage);
               } else {
