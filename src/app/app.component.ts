@@ -37,8 +37,14 @@ export class AppComponent {
           .subscribe(
             data => {
               this.resp = data;
-              this.requestFinished = true;
-              this.requestValid = true;
+              if(!this.resp?.json?.result){
+                this.errorMessage = "Incorrect response format:" + JSON.stringify(this.resp.json);
+                this.requestValid = false;
+                console.log(this.errorMessage);
+              } else {
+                this.requestFinished = true;
+                this.requestValid = true;
+              }
             },
             error => {
               this.errorMessage = "Unexpected Error Occurred!";

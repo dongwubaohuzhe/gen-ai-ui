@@ -21,7 +21,7 @@ export class SearchService {
   }
 
   doPostAISearch(keyString: any, sType: string, top: number = 10, rerank: number = 5): any {
-    return this.http.post<SearchResponse>(this._postAIUrl, {'query': keyString, 'search_type': sType, 'top_k': top, 'rerank_k': rerank});
+    return this.http.post<SearchResponse>(this._postReflectorUrl, {'query': keyString, 'search_type': sType, 'top_k': top, 'rerank_k': rerank});
   }
 
   doPostSearch(keyString: any): any {
