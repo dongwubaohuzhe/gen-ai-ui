@@ -1,0 +1,22 @@
+.header-style {
+  padding: 20px;
+}
+
+.header-img {
+    height: 9%;
+    width: 15%;
+}
+
+.container-fluid {
+    padding-right: 45px !important;
+    padding-left: 45px !important;
+}
+
+.example-action-button {
+  margin-top: 8px;
+  margin-right: 8px;
+}
+
+.active-button {
+  background-color: 'lightgrey';
+}
