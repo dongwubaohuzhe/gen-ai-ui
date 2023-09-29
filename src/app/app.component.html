@@ -1,7 +1,8 @@
-<title>{{ title }}</title>
+
+
 
 <div class="container-fluid" style="display: flex;">
-  <img class="header-img" src ="./assets/images/andes.png" style="width:150px;height:80px;">
+  <img class="header-img" src ="../assets/icons/andes_ic.svg" style="width:80px;height:80px;margin:5px;">
   <h1 class="header-style">Andes Mountains Search</h1>
 </div>
 <div class="container-fluid" style="padding-top: 15px">
@@ -18,7 +19,7 @@
             <input type="search" (search)="onSearch()" class="form-control" formControlName="keyWords" clear/>
           </td>
           <td width="70px">
-            <button class="btn btn-primary" type="submit" (click)="onSearch()">Search</button>
+            <button class="btn btn-primary" type="submit" (click)="onSearch()"><mat-icon style="vertical-align: middle; margin-right: 5px;">search</mat-icon>Search</button>
           </td>
         </tr>
       </table>
@@ -29,35 +30,17 @@
 <div class="container-fluid">
       <table width="100%">
         <tr>
-          <td>
-            <button mat-raised-button class="example-action-button" (click)="doTextSearch()"
-                [ngStyle]="{'background-color': (searchType === 'text') ? 'lightgrey' : ''}">
-              Text&nbsp;Search
-            </button>
-          </td>
-          <td>
-            <button mat-raised-button class="example-action-button"  (click)="doImageSearch()"
-                [ngStyle]="{'background-color': (searchType === 'image') ? 'lightgrey' : ''}">
-              Image&nbsp;Search
-            </button>
-          </td>
-          <td>
-            <button mat-raised-button class="example-action-button" (click)="doAudioSearch()"
-                [ngStyle]="{'background-color': (searchType === 'audio') ? 'lightgrey' : ''}">
-              Audio&nbsp;Search
-            </button>
-          </td>
-          <td>
-            <button mat-raised-button class="example-action-button" (click)="doVideoSearch()"
-                [ngStyle]="{'background-color': (searchType === 'video') ? 'lightgrey' : ''}">
-              Video&nbsp;Search
+          <td *ngFor="let typ of SearchTypes | keyvalue : originalOrder">
+            <button mat-raised-button (click)="onSearch(typ.value)"
+                    [ngStyle]="{'background-color': (searchType === typ.value) ? 'khaki' : ''}">
+              {{typ.value | titlecase}}
             </button>
           </td>
           <td width="100%">&nbsp;</td>
         </tr>
       </table>
 </div>
-
+<!--
 <div class="container-fluid" *ngIf="requestFinished === true && requestValid === true">
   <table>
     <tr>
@@ -70,7 +53,97 @@
     </tr>
   </table>
 </div>
+-->
+<ng-container *ngIf="requestFinished === true && requestValid === true">
+<div class="container-fluid">
+  <mat-toolbar color="primary" style="height: min-content; background-color: khaki;">
+    <span style="width: 100%;">
+    <span>&nbsp;</span>
+    <!--span style="float: right;">
+    <img src="../assets/icons/ret.png" class="colImg" style="width: 50px; height: 50px;" (click)="setCols(0)">
+    <img src="../assets/icons/1col.png" class="colImg" style="width: 35px; height: 40px; margin-right: 5px;" (click)="setCols(1)">
+    <img src="../assets/icons/2col.png" class="colImg" style="width: 35px; height: 35px; margin-right: 5px;" (click)="setCols(2)">
+    <img src="../assets/icons/3col.png" class="colImg" style="width: 35px; height: 36px; margin-right: 5px;" (click)="setCols(3)">
+    </span-->
+    </span>
+  </mat-toolbar>
+</div>
+
+<div id="gridDiv" class="container-fluid responsive-grid">
+  <mat-card *ngFor="let card of cards">
+    <mat-card-header>
+      <mat-card-title>
+        <a attr.href="{{card.link}}"> {{ card.filename }} </a>
+        <br />
+        <table>
+          <tr>
+            <td style="width: 50px; height: fit-content; padding: 0px;">
+              <svg viewBox="0 0 36 36" class="circular-chart blue" style="margin: 0px;">
+                <path class="circle-bg"
+                      d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <path class="circle"
+                      attr.stroke-dasharray="{{getPercentage(card.score)}}, 100"
+                      d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <text x="18" y="20.35" class="percentage">{{ card.score | percent }}
+                </text>
+              </svg>
+            </td>
+            <td style="padding: 0px;">
+              {{ card.source }}
+            </td>
+          </tr></table>
+      </mat-card-title>
+    </mat-card-header>
+    <br />
+    <div *ngIf="card.type === 'image'" style="display: contents;">
+      <img class="zoom" mat-card-image [src]="card.link"
+           (click)="onClick($event, card.filename)"
+           class="modal-hover-opacity object-fit-contain"
+           data-toggle="modal" data-target="#myModal"/>
+    </div>
+    <div *ngIf="card.type === 'audio'" style="display: contents;">
+      <audio controls><source [src]="card.link" type="audio/mpeg"/>Browser not supported</audio>
+    </div>
+    <div *ngIf="card.type === 'video'" style="display: contents;">
+      <video controls class="object-fit-sm-contain"><source [src]="card.link" type="video/mp4" class="object-fit-contain"/>Browser not supported</video>
+    </div>
+    <mat-card-content>
+      <br />
+      <p>{{ card.text }}</p>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" #closebutton class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">{{fileSrc}}</h4>
+        </div>
+        <div class="modal-body">
+          <img
+                  src="{{imgSrc}}"
+                  style="max-width:100%; max-height:100%; cursor:pointer"
+                  class="modal-hover-opacity"
+          />
+          <figcaption>
+          </figcaption>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ng-container>
 
 <div class="container-fluid" *ngIf="requestValid === false">
   <table><tr><td>{{ errorMessage }}</td></tr></table>
 </div>
+

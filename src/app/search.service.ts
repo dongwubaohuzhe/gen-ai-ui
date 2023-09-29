@@ -1,24 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { SearchResponse } from './types';
+import {SampleResponse, SearchResponse} from './types';
+import {Observable, of} from "rxjs";
 @Injectable({
   providedIn: 'root'
 })
 export class SearchService {
 
+  /*
   private _geturl: string = "https://official-joke-api.appspot.com/random_joke";
   //https://official-joke-api.appspot.com/random_joke
   //{"type":"general","setup":"What’s the advantage of living in Switzerland?","punchline":"Well, the flag is a big plus.","id":283}
-
   private _postReflectorUrl: string = "https://httpbin.org/post";
+  */
   private _postAIUrl: string = "http://127.0.0.1:8000/search";
 
   constructor(private http: HttpClient) { }
 
+  /*
   doGetSearch(keyString: any): any {
     //return this.http.get<SearchResponse>(this._url + keyString);
     return this.http.get<SearchResponse>(this._geturl);
   }
+  */
 
   doPostAISearch(keyString: any, sType: string, top: number = 10, rerank: number = 5): any {
     const httpOptions = {
@@ -26,13 +30,17 @@ export class SearchService {
         'Content-Type':  'application/json'
       })
     };
+    /*
     return this.http.post(
       this._postAIUrl,
       {'query': keyString, 'search_type': sType, 'top_k': top, 'rerank_k': rerank},
       httpOptions
     );
+    */
+    return of(SampleResponse);
   }
 
+  /*
   doPostSearch(keyString: any): any {
     return this.http.post<SearchResponse>(this._postReflectorUrl,
         {
@@ -62,5 +70,6 @@ export class SearchService {
         }
     );
   }
+  */
 
 }
